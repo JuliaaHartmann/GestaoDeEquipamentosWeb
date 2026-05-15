@@ -61,7 +61,9 @@ Compartilhado/Arquivos/
 Compartilhado/
  EntidadeBase.cs
  IRepositorio.cs
-Controllers/HomeController.cs
+Controllers/
+ FabricanteController.cs
+ HomeController.cs
 ModuloChamado/
  Chamado.cs
  RepositorioChamadoEmArquivo.cs
@@ -422,7 +424,11 @@ Program.cs
 obj/Debug/net10.0/GestaoDeEquipamentosWeb.ConsoleApp.GeneratedMSBuildEditorConfig.editorconfig
 
 [additionalFiles]
-Views/Home/Index.cshtml
+Views/
+ Fabricante/Listar.cshtml
+ Home/Index.cshtml
 
 [dynamicFiles]
-Views/Home/Index.cshtml
+Views/
+ Fabricante/Listar.cshtml
+ Home/Index.cshtml
