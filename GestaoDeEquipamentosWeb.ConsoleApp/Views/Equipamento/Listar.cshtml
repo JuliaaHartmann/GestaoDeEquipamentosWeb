@@ -28,6 +28,8 @@ ViewBag.Titulo = "Listagem de Equipamentos";
                 <td>@e.Nome</td>
                 <td>@e.PrecoAquisicao</td>
                 <td>@e.DataFabricacao</td>
+                <td>@e.PrecoAquisicao.ToString("C2")</td>
+                <td>@e.DataFabricacao.ToShortDateString()</td>
                 <td>@e.Fabricante</td>
                 <td>
                     <a href="/Fabricante/Editar/@e.Id">Editar</a>

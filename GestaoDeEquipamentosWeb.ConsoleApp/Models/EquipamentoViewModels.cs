@@ -8,3 +8,10 @@ public record ListarEquipamentosViewModel(
     DateTime DataFabricacao,
     string Fabricante
 );
+
+public record CadastrarEquipamentoViewModel(
+    string Nome,
+    decimal PrecoAquisicao,
+    DateTime DataFabricacao,
+    string FabricanteId
+);
