@@ -36,3 +36,12 @@ public record EditarChamadoViewModel(
     string EquipamentoId
 );
 
+public record ExcluirChamadoViewModel(
+    string Id,
+    string Titulo,
+    string? Descricao,
+    string Equipamento,
+    DateTime DataAbertura,
+    int TempoDecorrido,
+    bool EstaConcluido
+);
