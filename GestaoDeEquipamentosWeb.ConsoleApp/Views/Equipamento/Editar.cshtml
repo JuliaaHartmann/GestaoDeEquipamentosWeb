@@ -3,14 +3,13 @@
 @{
 Layout = "_Layout";
 ViewBag.Titulo = "Edição de Equipamento";
-
 List<ListarFabricantesViewModel> fabricantes = ViewBag.Fabricantes;
     }
 
     @model EditarEquipamentoViewModel
 
 
-    <form class="formulario" action="/Equipamento/Editar/@Model.id" method="post">
+    <form class="formulario" action="/Equipamento/Editar/@Model.Id" method="post">
 
         <div class="formulario-campo">
             <label>Nome</label>
