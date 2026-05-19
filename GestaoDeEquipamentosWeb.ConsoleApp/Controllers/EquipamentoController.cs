@@ -4,6 +4,7 @@ using GestaoDeEquipamentosWeb.ConsoleApp.Models;
 using GestaoDeEquipamentosWeb.ConsoleApp.ModuloEquipamento;
 using GestaoDeEquipamentosWeb.ConsoleApp.ModuloFabricante;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GestaoDeEquipamentosWeb.ConsoleApp.Controllers;
 
@@ -11,6 +12,7 @@ public class EquipamentoController : Controller
 {
     private readonly IRepositorio<Equipamento> repositorioEquipamento;
     private readonly IRepositorio<Fabricante> repositorioFabricante;
+
     public EquipamentoController()
     {
         ContextoJson contexto = new ContextoJson();
@@ -20,7 +22,7 @@ public class EquipamentoController : Controller
         repositorioFabricante = new RepositorioFabricanteEmArquivo(contexto);
     }
 
-    //Ações / Operação de CRUD
+    // Ações / Operação CRUD
     [HttpGet]
     public ActionResult Listar()
     {
@@ -37,6 +39,7 @@ public class EquipamentoController : Controller
                 e.DataFabricacao,
                 e.Fabricante.Nome
             );
+
             listarVms.Add(viewModel);
         }
 
@@ -48,7 +51,14 @@ public class EquipamentoController : Controller
     {
         ViewBag.Fabricantes = CarregarFabricantes();
 
-        return View();
+        CadastrarEquipamentoViewModel cadastrarVm = new CadastrarEquipamentoViewModel(
+            string.Empty,
+            0,
+            DateTime.Today,
+            string.Empty
+        );
+
+        return View(cadastrarVm);
     }
 
     [HttpPost]
@@ -56,14 +66,26 @@ public class EquipamentoController : Controller
     {
         Fabricante? fabricante = repositorioFabricante.SelecionarPorId(cadastrarVm.FabricanteId);
 
-        if (fabricante == null)
-            return RedirectToAction(nameof(Listar));
+        if (!string.IsNullOrWhiteSpace(cadastrarVm.FabricanteId) && fabricante == null)
+        {
+            ModelState.AddModelError(
+                nameof(cadastrarVm.FabricanteId),
+                "Selecione um fabricante válido."
+            );
+        }
+
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Fabricantes = CarregarFabricantes();
+
+            return View(cadastrarVm);
+        }
 
         Equipamento novoEquipamento = new Equipamento(
             cadastrarVm.Nome,
             cadastrarVm.PrecoAquisicao,
             cadastrarVm.DataFabricacao,
-            fabricante
+            fabricante!
         );
 
         repositorioEquipamento.Cadastrar(novoEquipamento);
@@ -97,14 +119,26 @@ public class EquipamentoController : Controller
     {
         Fabricante? fabricante = repositorioFabricante.SelecionarPorId(editarVm.FabricanteId);
 
-        if (fabricante == null)
-            return RedirectToAction(nameof(Listar));
+        if (!string.IsNullOrWhiteSpace(editarVm.FabricanteId) && fabricante == null)
+        {
+            ModelState.AddModelError(
+                nameof(editarVm.FabricanteId),
+                "Selecione um fabricante válido."
+            );
+        }
+
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Fabricantes = CarregarFabricantes();
+
+            return View(editarVm);
+        }
 
         Equipamento equipamentoAtualizado = new Equipamento(
             editarVm.Nome,
             editarVm.PrecoAquisicao,
             editarVm.DataFabricacao,
-            fabricante
+            fabricante!
         );
 
         repositorioEquipamento.Editar(editarVm.Id, equipamentoAtualizado);
@@ -143,25 +177,22 @@ public class EquipamentoController : Controller
         return RedirectToAction(nameof(Listar));
     }
 
-    private List<ListarFabricantesViewModel> CarregarFabricantes()
+    private List<SelectListItem> CarregarFabricantes()
     {
         List<Fabricante> fabricantes = repositorioFabricante.SelecionarTodos();
 
-        List<ListarFabricantesViewModel> listarVms = new List<ListarFabricantesViewModel>();
+        List<SelectListItem> selecionarFabricantes = new List<SelectListItem>();
 
         foreach (Fabricante f in fabricantes)
         {
-            // mapear objeto por objeto para viewModels
-            ListarFabricantesViewModel viewModel = new ListarFabricantesViewModel(
-                f.Id,
+            SelectListItem selecionarFabricanteVm = new SelectListItem(
                 f.Nome,
-                f.Email,
-                f.Telefone
+                f.Id
             );
 
-            listarVms.Add(viewModel);
+            selecionarFabricantes.Add(selecionarFabricanteVm);
         }
 
-        return listarVms;
+        return selecionarFabricantes;
     }
 }
