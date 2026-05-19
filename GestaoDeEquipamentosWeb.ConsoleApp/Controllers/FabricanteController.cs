@@ -25,11 +25,11 @@ public class FabricanteController : Controller
     {
         List<Fabricante> fabricantes = repositorioFabricante.SelecionarTodos();
 
-        List<ListarFabricantesViewModel> listarvms = new List<ListarFabricantesViewModel>();
+        List<ListarFabricantesViewModel> listarVms = new List<ListarFabricantesViewModel>();
 
         foreach (Fabricante f in fabricantes)
         {
-            //mapear objeto por objeto para viewModels
+            // mapear objeto por objeto para viewModels
             ListarFabricantesViewModel viewModel = new ListarFabricantesViewModel(
                 f.Id,
                 f.Nome,
@@ -37,22 +37,30 @@ public class FabricanteController : Controller
                 f.Telefone
             );
 
-            listarvms.Add(viewModel);
+            listarVms.Add(viewModel);
         }
 
-        return View(listarvms);
+        return View(listarVms);
     }
-
 
     [HttpGet]
     public ActionResult Cadastrar()
     {
-        return View();
+        CadastrarFabricanteViewModel cadastrarVm = new CadastrarFabricanteViewModel(
+            string.Empty,
+            string.Empty,
+            string.Empty
+        );
+
+        return View(cadastrarVm);
     }
 
     [HttpPost]
     public ActionResult Cadastrar(CadastrarFabricanteViewModel cadastrarVm)
     {
+        if (!ModelState.IsValid)
+            return View(cadastrarVm);
+
         Fabricante novoFabricante = new Fabricante(
             cadastrarVm.Nome,
             cadastrarVm.Email,
@@ -73,11 +81,11 @@ public class FabricanteController : Controller
             return RedirectToAction(nameof(Listar));
 
         EditarFabricanteViewModel editarVm = new EditarFabricanteViewModel(
-              id,
-              fabricante.Nome,
-              fabricante.Email,
-              fabricante.Telefone
-          );
+            id,
+            fabricante.Nome,
+            fabricante.Email,
+            fabricante.Telefone
+        );
 
         return View(editarVm);
     }
@@ -85,11 +93,14 @@ public class FabricanteController : Controller
     [HttpPost]
     public ActionResult Editar(EditarFabricanteViewModel editarVm)
     {
+        if (!ModelState.IsValid)
+            return View(editarVm);
+
         Fabricante fabricanteAtualizado = new Fabricante(
-          editarVm.Nome,
-          editarVm.Email,
-          editarVm.Telefone
-      );
+            editarVm.Nome,
+            editarVm.Email,
+            editarVm.Telefone
+        );
 
         repositorioFabricante.Editar(editarVm.Id, fabricanteAtualizado);
 
@@ -105,11 +116,11 @@ public class FabricanteController : Controller
             return RedirectToAction(nameof(Listar));
 
         ExcluirFabricanteViewModel excluirVm = new ExcluirFabricanteViewModel(
-           id,
-           fabricante.Nome,
-           fabricante.Email,
-           fabricante.Telefone
-       );
+            id,
+            fabricante.Nome,
+            fabricante.Email,
+            fabricante.Telefone
+        );
 
         return View(excluirVm);
     }
