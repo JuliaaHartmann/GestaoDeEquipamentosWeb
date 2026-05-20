@@ -1,4 +1,3 @@
-using System;
 using GestaoDeEquipamentosWeb.ConsoleApp.Compartilhado;
 using GestaoDeEquipamentosWeb.ConsoleApp.ModuloEquipamento;
 

@@ -10,7 +10,7 @@ namespace GestaoDeEquipamentosWeb.ConsoleApp.Controllers;
 
 public class ChamadoController : Controller
 {
-    private readonly IRepositorio<Chamado> repositorioChamado;
+    private readonly IRepositorioChamado repositorioChamado;
     private readonly IRepositorio<Equipamento> repositorioEquipamento;
 
     public ChamadoController()
@@ -23,9 +23,20 @@ public class ChamadoController : Controller
     }
 
     [HttpGet]
-    public ActionResult Listar()
+    public ActionResult Listar(string? status)
     {
-        List<Chamado> chamados = repositorioChamado.SelecionarTodos();
+        string? statusSelecionado = status?.ToLower();
+
+        List<Chamado> chamados;
+
+        if (statusSelecionado == "em-aberto")
+            chamados = repositorioChamado.Filtrar(chamado => !chamado.EstaConcluido);
+
+        else if (statusSelecionado == "concluidos")
+            chamados = repositorioChamado.Filtrar(chamado => chamado.EstaConcluido);
+
+        else
+            chamados = repositorioChamado.SelecionarTodos();
 
         List<ListarChamadoViewModel> visualizarChamados = new List<ListarChamadoViewModel>();
 
@@ -42,6 +53,8 @@ public class ChamadoController : Controller
 
             visualizarChamados.Add(listarChamadoVm);
         }
+
+        ViewBag.StatusSelecionado = statusSelecionado;
 
         return View(visualizarChamados);
     }
@@ -60,7 +73,7 @@ public class ChamadoController : Controller
     public ActionResult Cadastrar(CadastrarChamadoViewModel cadastrarVm)
     {
         Equipamento? equipamento =
-           repositorioEquipamento.SelecionarPorId(cadastrarVm.EquipamentoId);
+            repositorioEquipamento.SelecionarPorId(cadastrarVm.EquipamentoId);
 
         if (!string.IsNullOrWhiteSpace(cadastrarVm.EquipamentoId) && equipamento == null)
         {
@@ -100,7 +113,7 @@ public class ChamadoController : Controller
             chamado.Id,
             chamado.Titulo,
             chamado.Descricao,
-                  chamado.Equipamento.Id,
+            chamado.Equipamento.Id,
             chamado.EstaConcluido
         );
 
@@ -174,6 +187,7 @@ public class ChamadoController : Controller
 
         return RedirectToAction(nameof(Listar));
     }
+
     private List<SelectListItem> CarregarEquipamentos()
     {
         List<Equipamento> equipamentos = repositorioEquipamento.SelecionarTodos();
