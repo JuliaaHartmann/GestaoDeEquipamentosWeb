@@ -1,10 +1,7 @@
-using System;
 using GestaoDeEquipamentosWeb.ConsoleApp.Compartilhado;
 using GestaoDeEquipamentosWeb.ConsoleApp.ModuloEquipamento;
 
 namespace GestaoDeEquipamentosWeb.ConsoleApp.ModuloChamado;
-
-public delegate bool FiltroChamado(Chamado chamado);
 
 public class Chamado : EntidadeBase<Chamado>
 {
